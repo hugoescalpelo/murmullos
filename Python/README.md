@@ -25,7 +25,7 @@ sudo apt-get install python3
 
 Instala las bibliotecas necesarias:
 ```
-pip install SpeechRecognition
+pip install pip install google-cloud-speech
 pip install pyaudio
 pip install RPi.GPIO
 ```
@@ -75,5 +75,34 @@ Conecta el microfono y corre el programa llamado detectarmicrofono.py
 
 Puedes hacerlo con el siguiente comando.
 ```
-python ~/Documents/GitHub/Python/detectarmicrofono.py
+python ~/Documents/GitHub/murmullos/Python/detectarmicrofono.py
+```
+En mi caso aparece lo siguiente
+```
+Microfono 0: bcm2835 Headphones: - (hw:0,0)
+Microfono 1: UM10: USB Audio (hw:2,0)
+Microfono 2: sysdefault
+Microfono 3: lavrate
+Microfono 4: samplerate
+Microfono 5: speexrate
+Microfono 6: pulse
+Microfono 7: upmix
+Microfono 8: vdownmix
+Microfono 9: dmix
+Microfono 10: default
+```
+Mi modelo de microfono es UM10, por lo que usaré el Index 1 en el siguiente programa.
+
+Este comando requiere conexión a Internet.
+
+## Ejecutar programa
+
+Antes de ejecutar el programa, abre el archivo llamado murmulllosGooglePublicAPI.py en la carpeta Python de este repositorio haciendo doble clic sobre el. Se abrirá un editor de codigo, busca la linea 15 coloca el valor adecuado a la variable `device_index`. En mi caso, toda la linea de código  queda de la siguiente forma ```with sr.Microphone(device_index=1) as source:```.
+
+Guarda los cambios y cierra el editor.
+
+En la terminal de comandos ejecuta el siguiente comando para ejecutar el programa.
+
+```
+python ~/Documents/GitHub/murmullos/Python/murmullosGooglePublicAPI.py
 ```
