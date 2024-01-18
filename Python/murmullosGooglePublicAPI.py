@@ -1,44 +1,62 @@
 import RPi.GPIO as GPIO
 import speech_recognition as sr
-import time
+from google.oauth2 import service_account
+from google.cloud import speech_v1p1beta1 as speech
 
-LED_PIN = 17  # Ajusta el número del pin GPIO según tu configuración
+LED_PIN = 17
 
-def configurar_gpio():
+def configure_gpio():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(LED_PIN, GPIO.OUT)
     GPIO.output(LED_PIN, GPIO.LOW)
 
-def escuchar_microfono():
+def listen_microphone():
     recognizer = sr.Recognizer()
 
-    with sr.Microphone(device_index=2) as source:
-        print("Escuchando...")
-
-        while True:
-            try:
+    while True:
+        try:
+            with sr.Microphone(device_index=1) as source:
+                print("Escuchando...")
                 audio = recognizer.listen(source, timeout=5)
-                texto = recognizer.recognize_google(audio, language="es-ES")
 
-                if texto:
-                    print(f"Texto detectado: {texto}")
-                    encender_led()
-                    time.sleep(5)  # Espera 5 segundos antes de volver a escuchar
-                    apagar_led()
-            except sr.UnknownValueError:
-                apagar_led()
-            except sr.RequestError as e:
-                print(f"Error en la solicitud a Google API: {e}")
-                apagar_led()
+            print("Procesando audio...")
+            texto = recognize_google_cloud(audio)
+            if texto:
+                print(f"Texto detectado: {texto}")
+                turn_on_led()
+                time.sleep(5)
+                turn_off_led()
+        except sr.UnknownValueError:
+            turn_off_led()
+        except sr.RequestError as e:
+            print(f"Error en la solicitud a Google API: {e}")
+            turn_off_led()
 
-def encender_led():
+def recognize_google_cloud(audio):
+    credentials = service_account.Credentials.from_service_account_file(
+        'ruta/a/tu/archivo-de-credenciales.json')  # Reemplaza con la ruta de tus credenciales
+    client = speech.SpeechClient(credentials=credentials)
+
+    config = speech.RecognitionConfig(
+        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+        sample_rate_hertz=16000,
+        language_code="es-ES",
+    )
+
+    audio_content = audio.frame_data
+
+    response = client.recognize(config=config, audio={"content": audio_content})
+    for result in response.results:
+        return result.alternatives[0].transcript
+
+def turn_on_led():
     GPIO.output(LED_PIN, GPIO.HIGH)
     print("LED Encendido")
 
-def apagar_led():
+def turn_off_led():
     GPIO.output(LED_PIN, GPIO.LOW)
     print("LED Apagado")
 
 if __name__ == "__main__":
-    configurar_gpio()
-    escuchar_microfono()
+    configure_gpio()
+    listen_microphone()

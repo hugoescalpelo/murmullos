@@ -48,6 +48,7 @@ Para pasar el código a la Raspberry Pi se usará Git y Github.
     sudo apt-get update # Actualiza el sistema
     sudo apt-get install git    # Instala GIT
     ```
+    Estos comandos requieren conexión a Internet.
 2. Clona este repositorio.
     
     Se recomienda crear una carpeta llamada GitHub en Documents. Puedes hacerlo con el siguiente comando.
@@ -64,7 +65,15 @@ Para pasar el código a la Raspberry Pi se usará Git y Github.
 
     Para clonar el repositorio, ejecuta el siguiente comando
 
+    ```
+    git clone https://github.com/hugoescalpelo/murmullos.git
+    ```
+    Este comando requiere conexión a Internet.
 
-Estos comandos requieren conexión a Internet.
 ### Determinar el Index del micrófono
 Conecta el microfono y corre el programa llamado detectarmicrofono.py
+
+Puedes hacerlo con el siguiente comando.
+```
+python ~/Documents/GitHub/Python/detectarmicrofono.py
+```
